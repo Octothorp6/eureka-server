@@ -1,5 +1,6 @@
 applications:
   - name: cobra-eureka-server
-    path: build/libs/eureka-server-1.0-SNAPSHOT.jar
+    path: build/libs/cobra-eureka-server-0.0.1-SNAPSHOT.jar
     instances: 1
-    route: cobra-eureka-server.cfapps.io
+    routes:
+      - route: cobra-eureka-server.cfapps.io

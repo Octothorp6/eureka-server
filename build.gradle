@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.2.5.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id "com.github.pivotalservices.cf-app" version "2.3.0-rc.6"
 	id 'java'
 }
 
@@ -14,6 +15,13 @@ repositories {
 
 ext {
 	set('springCloudVersion', "Hoxton.SR3")
+	projectName = "cobra-eureka-server"
+
+}
+
+bootJar {
+	baseName(rootProject.name)
+	version("$project.version")
 }
 
 dependencies {
@@ -32,3 +40,21 @@ dependencyManagement {
 test {
 	useJUnitPlatform()
 }
+
+
+cfConfig {
+	ccHost = 'api.run.pivotal.io'
+	ccUser = project.getProperty('CF_USR')
+	ccPassword = project.getProperty('CF_PSW')
+	org = project.getProperty(project.getProperty('ENV') + '.CCSpace')
+	name = rootProject.name
+	filePath = "build/libs/" + bootJar.archiveName
+	path = ""
+	routes = [rootProject.name + ".cfapps.io"]
+	instances = 1
+	memory = 1024
+	timeout = 180
+	manifestFile = "manifest.yml"
+}
+
+"cf-push" {dependsOn "bootJar"}
